@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}Регистрация{% endblock %}
+{% block main_title %}Регистрация{% endblock %}
+{% block content %}
+    <div class="row">
+        <form class="col s12" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn waves-effect waves-light" type="submit" name="action">Отправить
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+{% endblock %}

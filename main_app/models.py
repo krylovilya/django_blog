@@ -4,10 +4,10 @@ from django.db import models
 # Create your models here.
 
 
-class User(models.Model):
-    username = models.CharField(max_length=150, unique=True, verbose_name="Логин")
-    password = models.CharField(max_length=150, blank=True, verbose_name="Пароль")
-    last_login = models.DateTimeField(blank=True, verbose_name="Последний вход", editable=False)
+class User(AbstractUser):
+    # username = models.CharField(max_length=150, unique=True, verbose_name="Логин")
+    # password = models.CharField(max_length=150, blank=True, verbose_name="Пароль")
+    # last_login = models.DateTimeField(verbose_name="Последний вход", editable=False)
 
     def __str__(self):
         return self.username

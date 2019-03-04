@@ -1,0 +1,67 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{% static "css/materialize.css" %}" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{% static "css/style.css" %}" media="screen,projection"/>
+    <script type="text/javascript" src="{% static "js/materialize/bin/materialize.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/init.js" %}"></script>
+    <title>{% block title %}Главная страница {% endblock %}</title>
+
+</head>
+<body>
+<header>
+    <ul id="slide-out" class="sidenav sidenav-fixed">
+        <li><a href="/"><h4 class="center">Blog</h4></a></li>
+        <!--<li><div class="user-view">
+          <a href="#user"><img class="circle" src="images/yuna.jpg"></a>
+          <a href="#name"><span class="white-text name">John Doe</span></a>
+          <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+        </div></li>
+        <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+        <li><a href="#!">Second Link</a></li>
+        <li><div class="divider"></div></li>
+        <li><a class="subheader">Subheader</a></li>
+        <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>-->
+        <div class="nav-wrapper">
+            <form>
+                <div class="input-field">
+                    <input id="search" type="search" placeholder="Search" required>
+                    <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                    <i class="material-icons">close</i>
+                </div>
+            </form>
+        </div>
+        <li>
+            <div class="divider"></div>
+        </li>
+        <li><a href="/register">Регистрация</a></li>
+
+    </ul>
+</header>
+
+
+<div class="container">
+    <div style="position: absolute; top: 10px; left: 10px;"><a href="#" data-target="slide-out"
+                                                               class="sidenav-trigger black-text"><i
+            class="material-icons">menu</i></a></div>
+
+    <div class="row"><h3>{% block main_title %}Главная страница {% endblock %}</h3>
+    </div>
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script type="text/javascript">
+    M.AutoInit();
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.sidenav');
+        var instances = M.Sidenav.init(elems);
+    });
+    {% if msg %}
+        M.toast({html: "{{ msg }}"});
+    {% endif %}
+</script>
+</body>
+</html>
