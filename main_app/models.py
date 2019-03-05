@@ -1,7 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import base64
+from django.contrib.postgres.fields import HStoreField
+from django.http.response import HttpResponseServerError
 
 # Create your models here.
+
 
 
 class User(AbstractUser):
@@ -29,3 +33,24 @@ class Post(models.Model):
     class Meta:
         verbose_name = "Пост"
         verbose_name_plural = "Посты"
+
+
+class Captcha(models.Model):
+    session_id = models.CharField(max_length=200)
+    captcha_text = models.IntegerField(max_length=5)
+
+    @staticmethod
+    def create_captcha(session_id, captcha_int):
+        if Captcha.objects.filter(session_id=session_id).count() == 0:
+            Captcha.objects.create(session_id=session_id, captcha_text=captcha_int)
+            return
+        else:
+            captcha = Captcha.objects.get(session_id=session_id)
+            captcha.captcha_text = captcha_int
+            captcha.save()
+
+    @staticmethod
+    def get_captcha(session_id):
+        if Captcha.objects.filter(session_id=session_id).count() == 0:
+            raise HttpResponseServerError
+        return Captcha.objects.filter(session_id=session_id)[0].captcha_text
