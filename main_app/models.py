@@ -1,11 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-import base64
-from django.contrib.postgres.fields import HStoreField
 from django.http.response import HttpResponseServerError
 
-# Create your models here.
 
+# Create your models here.
 
 
 class User(AbstractUser):
@@ -36,21 +34,22 @@ class Post(models.Model):
 
 
 class Captcha(models.Model):
-    session_id = models.CharField(max_length=200)
-    captcha_text = models.IntegerField(max_length=5)
+    # Хорошо бы добавить в crontab задачу, которая удаляет объекты, старше, например, 24 часов
+    captcha_id = models.IntegerField()
+    captcha_text = models.IntegerField()
 
     @staticmethod
-    def create_captcha(session_id, captcha_int):
-        if Captcha.objects.filter(session_id=session_id).count() == 0:
-            Captcha.objects.create(session_id=session_id, captcha_text=captcha_int)
+    def create_captcha(captcha_id, captcha_int):
+        if Captcha.objects.filter(captcha_id=captcha_id).count() == 0:
+            Captcha.objects.create(captcha_id=captcha_id, captcha_text=captcha_int)
             return
         else:
-            captcha = Captcha.objects.get(session_id=session_id)
+            captcha = Captcha.objects.get(captcha_id=captcha_id)
             captcha.captcha_text = captcha_int
             captcha.save()
 
     @staticmethod
-    def get_captcha(session_id):
-        if Captcha.objects.filter(session_id=session_id).count() == 0:
+    def get_captcha(captcha_id):
+        if Captcha.objects.filter(captcha_id=captcha_id).count() == 0:
             raise HttpResponseServerError
-        return Captcha.objects.filter(session_id=session_id)[0].captcha_text
+        return Captcha.objects.filter(captcha_id=captcha_id)[0].captcha_text
