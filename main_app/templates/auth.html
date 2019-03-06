@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}Авторизация{% endblock %}
+{% block main_title %}Авторизация{% endblock %}
+{% block content %}
+    <div class="row">
+        <form class="col s12" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p><img src='data:image/png;base64,{{ captcha }}'/></p>
+            <button class="btn waves-effect waves-light" type="submit" name="action">Отправить
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+{% endblock %}

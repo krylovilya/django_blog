@@ -36,7 +36,16 @@
         <li>
             <div class="divider"></div>
         </li>
-        <li><a href="/register">Регистрация</a></li>
+        {% if not user.is_authenticated %}
+            <li><a href="/register">Регистрация</a></li>
+            <li><a href="/auth">Авторизация</a></li>
+        {% else %}
+            <li><h6 class="center-align">Привет, {{ user.username }}</h6></li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li><a href="/logout">Выход</a></li>
+        {% endif %}
 
     </ul>
 </header>

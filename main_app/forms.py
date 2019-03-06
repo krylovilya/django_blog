@@ -1,8 +1,9 @@
-from .models import User
 from django import forms
 
+from .models import User
 
-class RegisterForm(forms.ModelForm):
+
+class RegisterAuthForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     captcha = forms.IntegerField(help_text="Captcha")
 
