@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}Редактор{% endblock %}
+{% block main_title %}Редактор{% endblock %}
+{% block head %}
+    <!--<link href="{% static "quill/quill.snow.css" %}" rel="stylesheet">-->
+{% endblock %}
+{% block content %}
+        <div class="row">
+        <form class="col s12" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn waves-effect waves-light" type="submit" name="action">Отправить
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+    <!--<div id="toolbar">
+        <select class="ql-size browser-default">
+            <option value="small"></option>
+            <option selected></option>
+            <option value="large"></option>
+            <option value="huge"></option>
+        </select>
+        <button class="ql-bold"></button>
+        <button class="ql-italic"></button>
+        <button class="ql-underline"></button>
+        <button class="ql-strike"></button>
+        <button class="ql-code-block"></button>
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        <button class="ql-indent" value="-1"></button>
+        <button class="ql-indent" value="+1"></button>
+        <button class="ql-script" value="sub"></button>
+        <button class="ql-script" value="super"></button>
+        <select class="ql-align browser-default">
+            <option selected="selected"></option>
+            <option value="center"></option>
+            <option value="right"></option>
+            <option value="justify"></option>
+        </select>
+        <button class="ql-link"></button>
+        <button class="ql-image"></button>
+        <button class="ql-video"></button>
+        <button class="ql-clean"></button>
+    </div>
+    <div id="editor" style="min-height: 450px;"></div>
+    <script src="{% static "quill/quill.min.js" %}"></script>
+    <script>
+        var quill = new Quill('#editor', {
+            modules: {
+                toolbar: '#toolbar'
+            },
+            placeholder: 'Compose an epic...',
+            theme: 'snow'  // or 'bubble'
+        });
+
+    </script>-->
+
+{% endblock %}

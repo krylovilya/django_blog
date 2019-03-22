@@ -1,17 +1,27 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}Главная страница{% endblock %}
-{% block main_title %}Главная страница{% endblock %}
+{% block title %}{{ user.username }}{% endblock %}
+{% block main_title %}Профиль{% endblock %}
 {% block head %}
     <style>
         .grid-item {
+            /*max-width: 400px;*/
             width: 400px;
-            margin-left: 10px;
+            margin-left: 15px;
         }
     </style>
 {% endblock %}
 {% block content %}
+
     <div class="grid" style="word-wrap: break-word;">
+        <div class="grid-item">
+            <div class="card-panel z-depth-2 grey lighten-5">
+                <p><b>Логин: </b>{{ current_user.username }}</p>
+                <p><b>Последний вход: </b>{{ current_user.last_login }}</p>
+                <p><b>Количество постов: </b>{{ post_count }}</p>
+            </div>
+        </div>
+
         {% for post in posts %}
             <a class="modal-trigger" style="color: black" href="#modal{{ post.id }}">
                 <div class="grid-item">

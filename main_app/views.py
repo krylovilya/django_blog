@@ -4,17 +4,30 @@ import random
 from captcha.image import ImageCaptcha
 from django.contrib.auth import hashers
 from django.contrib.auth import login, logout
-from django.http.response import HttpResponse, HttpResponseServerError
+from django.http.response import HttpResponse, HttpResponseServerError, Http404
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
-from .forms import RegisterAuthForm
-from .models import Captcha, User
+from .forms import RegisterAuthForm, EditForm
+from .models import Captcha, User, Post
 
 
 class IndexView(TemplateView):
     def get(self, request, *args, **kwargs):
-        content = {}
+        if request.GET.get('pagination'):
+            pagination = int(request.GET['pagination'])
+        else:
+            pagination = 1
+        posts = Post.objects.all().order_by("-created_at")
+        if (User.objects.count() / 50).is_integer():
+            max_pagination = User.objects.count() / 50
+        else:
+            max_pagination = User.objects.count() // 50 + 1
+        content = {
+            "posts": posts,
+            "pagination": pagination,
+            "max_pagination": max_pagination
+        }
         if "msg" in request.GET:
             content.update({"msg": request.GET['msg']})
         return render(request, "index.html", content)
@@ -22,7 +35,29 @@ class IndexView(TemplateView):
 
 class ProfileView(TemplateView):
     def get(self, request, *args, **kwargs):
-        pass
+        user_id = kwargs['id']
+        if user_id == 0:
+            return redirect("/profile/{}".format(request.user.id))
+        if User.objects.filter(id=user_id).count() == 0:
+            raise Http404
+        if request.GET.get('pagination'):
+            pagination = int(request.GET['pagination'])
+        else:
+            pagination = 1
+        if (User.objects.count() / 50).is_integer():
+            max_pagination = User.objects.count() / 50
+        else:
+            max_pagination = User.objects.count() // 50 + 1
+        user_object = User.objects.get(id=user_id)
+        posts = Post.objects.filter(author=user_object).order_by("-created_at")[50 * (pagination - 1):50 * pagination]
+        content = {
+            "current_user": user_object,
+            "posts": posts,
+            "post_count": Post.objects.filter(author=user_object).count(),
+            "pagination": pagination,
+            "max_pagination": max_pagination
+        }
+        return render(request, "profile.html", content)
 
 
 def generate_captcha():
@@ -127,9 +162,53 @@ class LogoutView(TemplateView):
 
 class AddPostView(TemplateView):
     def get(self, request, *args, **kwargs):
-        pass
+        form = EditForm()
+        if request.user.is_authenticated is False:
+            raise Http404
+        content = {"form": form}
+        if "msg" in request.GET:
+            content.update({"msg": request.GET['msg']})
+        return render(request, "add_post.html", content)
+
+    def post(self, request, *args, **kwargs):
+        form = EditForm(request.POST)
+        if request.user.is_authenticated is False:
+            raise Http404
+        if form.is_valid() is False:
+            return render(request, "add_post.html", {"form": form})
+        new_post = Post()
+        new_post.title = request.POST["title"]
+        new_post.content = request.POST["content"]
+        new_post.author = request.user
+        new_post.save()
+        return redirect("/?msg=Пост создан")
 
 
 class EditPostView(TemplateView):
     def get(self, request, *args, **kwargs):
-        pass
+        post_id = kwargs['id']
+        if Post.objects.filter(id=post_id).count() == 0:
+            raise Http404
+        post = Post.objects.filter(id=post_id)[0]
+        if request.user != post.author:
+            raise Http404
+        form = EditForm()
+        form.fields["title"].initial = post.title
+        form.fields["content"].initial = post.content
+        content = {"form": form}
+        if "msg" in request.GET:
+            content.update({"msg": request.GET['msg']})
+        return render(request, "editor.html", content)
+
+    def post(self, request, *args, **kwargs):
+        post_id = kwargs['id']
+        form = EditForm(request.POST)
+        if Post.objects.filter(id=post_id).count() == 0:
+            raise Http404
+        post = Post.objects.filter(id=post_id)[0]
+        if request.user != post.author:
+            raise Http404
+        post.title = request.POST["title"]
+        post.content = request.POST["content"]
+        post.save()
+        return redirect("/?msg=Пост отредактирован")

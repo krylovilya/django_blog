@@ -8,7 +8,8 @@
     <script type="text/javascript" src="{% static "js/materialize/bin/materialize.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/init.js" %}"></script>
     <title>{% block title %}Главная страница {% endblock %}</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% block head %}{% endblock %}
 </head>
 <body>
 <header>
@@ -44,7 +45,9 @@
             <li>
                 <div class="divider"></div>
             </li>
+            <li><a href="/profile/0">Профиль</a></li>
             <li><a href="/logout">Выход</a></li>
+            <li><a href="/add_post">Создать пост</a></li>
         {% endif %}
 
     </ul>
